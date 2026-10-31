@@ -79,7 +79,7 @@ Before committing any evidence to GitHub:
 5. Retain only the request and response content needed to support the observation.
 6. Confirm that the material comes from an authorised Academy lab or another explicitly authorised environment.
 
-Do not assume that an artefact is safe to publish simply because it was collected in a training environment. Review it before every commit.
+Re-review it before every commit.
 
 ## Evidence quality
 
