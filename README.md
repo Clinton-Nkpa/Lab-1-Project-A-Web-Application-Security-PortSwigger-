@@ -4,7 +4,7 @@
 
 **Project:** Web Application Security Testing  
 **Platform:** PortSwigger Web Security Academy  
-**Report status:** Initial project plan — practical testing has not yet started  
+**Report status:** Initial project planning 
 **Prepared:** 31 October 2026  
 **Author:** Clinton Nkpa
 
