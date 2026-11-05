@@ -4,7 +4,7 @@
 
 The workflow has two gated phases. The username phase uses a deliberately incorrect control password to distinguish recognized usernames from unrecognized ones. The password phase runs only for usernames recognized in the first phase as valid by the lab and stops trying passwords for a username after a successful login.
 
-In this design, **cascading failure point** means that each stage must pass before the next stage is evaluated. A failed session check or runtime request error stops the workflow; it is not treated as a username or password result.
+In this design, **cascading failure point** means that each stage must pass before the next stage is evaluated. A failed session check or runtime request error stops the workflow.
 
 ## Response classification
 
