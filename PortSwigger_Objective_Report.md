@@ -1,192 +1,623 @@
-# PortSwigger Web Security Academy  Objective and Methodology Report
+[PortSwigger_Lab_1_Report.md](https://github.com/user-attachments/files/34429616/PortSwigger_Lab_1_Report.md)# PortSwigger Web Security Academy
 
-**Project:** Web Application Security Testing  
-**Platform:** PortSwigger Web Security Academy  
-**Report status:** Initial project plan — practical testing has not yet started  
-**Prepared:** 31 October 2026  
-**Author:** Clinton Nkpa
+## Lab 1 --- Authentication Vulnerabilities: Username Enumeration via Different Responses
 
----
+**Report status:** --- Execution Constraints and Session
+Lifecycle Update\
+**Assessment period:** 1--3 November 2026\
+**Target:** PortSwigger Web Security Academy authorised lab\
+**Lab:** Username enumeration via different responses\
+**Assessment status:** Successfully solved
 
-## 1. Purpose and objective
+------------------------------------------------------------------------
 
-The objective of this project is to develop and demonstrate a practical understanding of common web application security weaknesses through structured, authorised testing in PortSwigger Web Security Academy.
+## 1. Executive summary
 
-The labs work focuses on how vulnerabilities arise in real HTTP request/response flows, how they can be identified and validated, what an attacker could achieve if they were present, and what changes would prevent or reduce the risk. The aim is not simply to complete a collection of Academy exercises, but to build a repeatable testing process and produce evidence-backed findings that can be explained clearly.
+This assessment examined username enumeration through distinguishable
+authentication failure responses in a PortSwigger Web Security Academy
+lab.
 
-The initial emphasis will be understanding application behaviour before attempting to manipulate it. Requests, responses, parameters, cookies, tokens, redirects and access decisions will be examined in context. Where a weakness is identified, testing will remain within the deliberately vulnerable Academy environment.
+The application returned different error messages depending on whether
+the submitted username existed:
 
-The project is intended to provide practical evidence relevant to a junior penetration tester, web application security testing and application security analyst roles.
+-   `Invalid username` for an unrecognised username.
+-   `Incorrect password` for a recognised username submitted with an
+    incorrect password.
 
-## 2. Scope
+This difference provided a reliable application-level signal for
+identifying valid usernames.
 
-The initial scope is PortSwigger Web Security Academy and its deliberately provided training labs. Testing will be limited to Academy exercises and any local test components explicitly introduced for this project.
+The testing process began with manual HTTP inspection in Burp Suite,
+followed by a Python implementation using the standard library. The
+implementation automated the two-stage process of identifying recognised
+usernames and testing password candidates against those usernames.
 
-Planned subject areas:
+The final execution identified:
 
-1. HTTP fundamentals and request/response analysis.
-2. Authentication and session management.
-3. Access control, including insecure direct object reference (IDOR) patterns.
-4. Injection vulnerabilities, including SQL injection where covered by selected labs.
-5. Path traversal and file-handling weaknesses.
-6. Evidence capture, impact assessment, remediation recommendations and retesting.
-
-Order subject to change as practical workflow reveals hidden dependencies or likely knowledge gaps. Exact labs completed, difficulties and outcomes will be recorded accordingly.
-
-**Out of scope:** Though it goes without saying, public websites, systems belonging to other people or organisations, and any explicitly authorised  target has not been provided beyond the scope of what Portswigger Academy Web Security provides. Academy techniques will  therefore not be transferred to live targets without clear lawful permissions.
-
-## 3. Tools and resources
-
-| Tool/resource | Intended use | Status |
-|---|---|---|
-| PortSwigger Web Security Academy | Structured learning material and authorised practice labs | Selected |
-| Burp Suite Community Edition | Intercepting, inspecting, modifying and replaying HTTP traffic | Planned |
-| Firefox or Chromium | Browser used to access labs and route traffic through Burp | Planned |
-| Markdown notes and evidence folders | Recording steps, observations, evidence references and conclusions | To be established |
-| OWASP Web Security Testing Guide (WSTG) | Supplementary methodology and terminology where useful | Optional |
-| OWASP ZAP | Alternative proxy/scanner for comparison where appropriate | Optional; not required initially |
-
-The initial workflow is deliberately based on a browser and an intercepting proxy. Additional tools will be introduced only where they answer a specific testing question. Automated scanning will not replace manual validation.
-
-## 4. Method of execution
-
-Each exercise follows a consistent sequence  for ease of reproduction of results and so observations are separated from assumptions.
-
-### 4.1 Establish the test context
-- Record the Academy topic, lab title, stated objective and difficulty.
-- Confirm that the target is an Academy-provided lab instance.
-- Note relevant application functionality, test roles/accounts and supplied data.
-- Record browser and Burp versions where practical.
-
-### 4.2 Establish a baseline
-- Browse any relevant functionality without modifying requests.
-- Identify the normal sequence of requests and responses.
-- Record relevant methods, paths, parameters, cookies, headers, tokens, status codes and response behaviour.
-- Establish baseline parameters of a normal authorised action before testing for a weakness.
-
-### 4.3 Form a test hypothesis
-State what control may be missing or incorrectly implemented and what observable result would support that hypothesis. For example, an access-control test might ask whether changing an object identifier allows one test user to access an object belonging to another test user.
-
-The hypothesis should be specific enough to be disproved. A response that differs from the baseline is an observation; it is not automatically proof of a vulnerability.
-
-### 4.4 Conduct a controlled test
-- Use Burp Proxy to inspect relevant traffic.
-- Use Repeater or equivalent manual request replay to change one meaningful variable at a time.
-- Compare the modified request and response with the baseline.
-- Keep tests within the lab's intended scope and avoid unnecessary request volume.
-- Record exact request changes and resulting behaviour, sanitise session material before storing evidence.
-
-### 4.5 Validate and assess impact
-Where a suspected weakness appears, repeat the test where possible and consider alternative explanations. Establish what the behaviour demonstrates and what it does not. Describe impact in the specific lab context rather than assuming every similar production system would be affected identically.
-
-### 4.6 Document remediation and retest
-For each validated finding:
-- Explain the underlying control failure.
-- Recommend a mitigation that addresses the cause, not only the observed payload.
-- Identify relevant server-side enforcement, validation, session or logging improvements.
-- Retest the same behaviour after mitigation, if the lab provides a way to do so.
-- Record whether the retest confirms the mitigation, partially supports it or remains inconclusive, partially rejects it, or completely rejects it.
-
-### 4.7 Produce a finding record
-Each finding highlights associated labs and titles, preconditions and test-role context (without credentials), baseline behaviour, hypothesis, steps performed, sanitised evidence, observed result, impact and limitations, alternative interpretations, remediation, and retest result/status.
-
-## 5. Expected constraints and methodological limitations
-
-These are anticipated constraints to test against, before any findings are observed.
-
-| Expected constraint | Possible effect | Planned response |
-|---|---|---|
-| Academy labs are intentionally scoped and simplified | Results may not represent production complexity or controls | State the lab context and avoid generalising beyond evidence |
-| Lab instances may reset or expire | Test state and evidence may be lost | Save sanitised notes and screenshots promptly; record reset conditions |
-| Burp Community has fewer features than Professional | Some workflow conveniences and automated capabilities may be unavailable | Prioritise manual Proxy and Repeater testing; note material limitations |
-| Browser/proxy configuration affects traffic capture | Missing requests may be mistaken for application behaviour | Verify proxy settings, interception state and browser routing |
-| Academy instructions may constrain the intended solution | A lab may reward a particular exploit chain rather than cover every variant | Separate the lab success condition from broader security conclusions |
-| Shared lab infrastructure or network conditions affect timing | Delays, resets or intermittent responses may reduce repeatability | Repeat tests and record timestamps/environmental conditions |
-| Automated tooling can produce false positives or miss context | Scanner output may not establish exploitability or business impact | Manually validate tool-generated results |
-
-## 6. Future observed constraints — expected versus reality
-
-This section will be updated with observed constraints and compared with the expectations above.
-
-| Area | Expected constraint | Observed constraint / evidence | Effect on method/result | Adjustment made | Status |
-|---|---|---|---|---|---|
-| Browser and proxy | Configuration may prevent complete capture | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Burp Community | Feature limitations may affect workflow | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Academy environment | Reset/expiry or simplified behaviour may affect repeatability | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Test methodology | Lab's expected path may not represent all variants | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Evidence capture | Sanitisation or missing context may limit interpretation | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-
-A difference between expectation and reality is not automatically a failure. A constraint may be absent, more significant than expected, or caused by an unaccounted or external factor rather than the application itself.
-
-## 7. Alternative interpretations of evidence
-
-This section will be completed alongside individual findings in order to prevent a premature conclusion based on one response or an incomplete capture.
-
-Potential alternative explanations include:
-
-- **Authentication versus authorisation:** a request may be authenticated successfully while access to a particular object is correctly denied. A successful response alone does not establish that the correct user or role was authorised.
-- **Application versus intermediary behaviour:** a status code, redirect or blocked request may originate from the application, proxy, browser control or another intermediary.
-- **Session state:** an unexpected response may result from an expired, missing or mismatched cookie/token rather than the vulnerability being tested.
-- **Caching and stale state:** a response may reflect cached content or an earlier application state rather than a fresh authorisation decision.
-- **Input handling versus business logic:** a rejected payload may indicate validation, parsing behaviour or a business-rule restriction; further evidence is needed to identify the control responsible.
-- **Lab-specific behaviour:** an outcome may be deliberately engineered for the exercise and may not map directly to a production implementation.
-
-For each finding, the report will identify the interpretation best supported by the evidence, note credible alternatives, and state what additional test could distinguish between them.
-
-## 8. Evidence handling and reporting standard
-
-Evidence will be stored in a structured, sanitised form. Screenshots and request/response captures should show the relevant behaviour without exposing passwords, live tokens, personal data or unrelated session information.
-
-repository structure:
-
-```text
-PortSwigger/
-├── README.md
-├── PortSwigger_Objective_Report.md
-├── PortSwigger_Objective_Report.docx
-├── evidence/
-│   └── .gitkeep
-└── findings/
-    └── .gitkeep
+``` python
+validUsers = ['amarillo']
+validCredentials = [('amarillo', 'matthew')]
 ```
 
-Use descriptive filenames that identify the lab and evidence sequence. Keep raw secrets and reusable session material out of Git. Review all evidence and notes for credentials, cookies, bearer tokens, personal data and other sensitive values before committing.
+PortSwigger subsequently displayed the lab's successful completion
+message.
 
-## 9. Final conclusions
+A later execution returned HTTP 504. This exposed an operational
+limitation: when the lab session expired and a new lab instance URL was
+required, the script's hard-coded target URL had to be updated manually.
+The current implementation also did not perform a separate initial
+session-validation step.
 
-**Initial conclusion — project not yet executed**
+The assessment therefore achieved its primary objective while
+identifying session lifecycle management as a future improvement.
 
-No vulnerability findings are being claimed at this stage. The project is at the planning and setup stage. The methodology is designed to progress from normal application behaviour to a testable hypothesis, controlled request manipulation, evidence-based validation and a defensible remediation recommendation.
+## 2. Scope and environment
 
-The value of the project will come from the quality of the reasoning and evidence, not simply the number of Academy labs marked as solved. A successful lab completion will be recorded as an exercise outcome; it will only be described as a validated security finding where the evidence supports that conclusion.
+**Scope:** One individual PortSwigger Academy lab instance.
 
-A final conclusion will be written after testing has produced enough evidence to assess the areas covered, recurring weaknesses, constraints encountered and effectiveness of the testing method.
+**Testing environment:** - Operating system: Linux Mint. - Browser and
+interception environment: Burp Suite integrated Chromium. - Development
+environment: Visual Studio Code. - Python runtime: Python 3.12.3, as
+visible in the terminal screenshot. - HTTP implementation: Python
+standard library (`urllib`, `http.cookiejar`). - Target: https://portswigger.net/web-security/authentication/password-based/lab-username-enumeration-via-different-responses.
 
-## 10. Future labs and work that will supplement the conclusions
+Testing was confined to the authorised lab environment.
 
-These exercises are intended to extend and cross-check the skills developed here. They are planned follow-on work, not part of the current completed scope.
+## 3. Initial HTTP inspection
 
-| Follow-on lab/project | How it supplements this project |
-|---|---|
-| OWASP Juice Shop | Provides a deliberately vulnerable application in a more integrated context and allows comparison of findings and workflow |
-| OWASP crAPI | Extends work into API-specific weaknesses, including object-level authorisation, authentication and excessive data exposure |
-| AWS API Security and Detection lab | Provides a defensive counterpart: API authentication/authorisation, request validation, WAF, logging, monitoring and controlled detection tests |
-| AWS cloud attack-path assessment | Adds cloud identity, network and service-permission context to application security |
-| MITRE ATT&CK adversary emulation and detection engineering | Connects controlled attack behaviour with telemetry, detection logic, triage and response |
+The initial evidence-gathering process involved launching the lab,
+navigating to `/login`, submitting deliberately invalid credentials, and
+inspecting the resulting HTTP traffic.
 
-The AWS API Security and Detection project will remain in its own report and repository. Cross-references will be added only when both workstreams contain enough practical evidence to compare a specific offensive behaviour with a corresponding defensive control or detection.
+### 3.1 Initial request
 
-## 11. Initial project status
+The login page was requested using:
 
-| Item | Status |
-|---|---|
-| Project objective and scope | Defined |
-| Initial toolset | Selected / planned |
-| Testing methodology | Defined |
-| Expected constraints | Documented as hypotheses |
-| Observed constraints | Not yet assessed |
-| Practical Academy testing | Not yet started |
-| Validated findings | None claimed |
-| Final conclusions | Pending execution |
+``` http
+GET /login HTTP/2
+```
+
+The request included a session cookie. The cookie value is intentionally
+excluded from this report.
+
+### 3.2 Invalid username response
+
+A POST request was submitted with an unrecognised username and a test
+password.
+
+The application returned:
+
+``` http
+HTTP/2 200 OK
+Content-Length: 3244
+```
+
+The response body contained:
+
+``` html
+<p class=is-warning>Invalid username</p>
+```
+
+### 3.3 Recognised username response
+
+A second request was submitted using a recognised username and an
+incorrect password.
+
+The application returned:
+
+``` http
+HTTP/2 200 OK
+Content-Length: 3246
+```
+
+The response body contained:
+
+``` html
+<p class=is-warning>Incorrect password</p>
+```
+
+### 3.4 Initial observation
+
+The application disclosed whether a username existed through its
+authentication error message.
+
+The response-length difference of two bytes was also consistent with the
+different message content, but the error-message distinction was the
+stronger classification signal.
+
+**Finding F-01:** Username enumeration through distinguishable
+authentication failure responses.
+
+The finding demonstrates account-existence disclosure. which
+is a more subtle but easily fixable form of authentication bypass or account compromise.
+Simply generating a generic user credential failure message for both username and password
+while providing a MF authentication upon succesful credentials would resolve the vulnerability.
+
+## 4. Initial Python implementation
+
+The first Python implementation automated username enumeration using a
+constant test password.
+
+The script: 1. Created a cookie-aware HTTP opener. 2. Iterated through a
+predefined username candidate list. 3. Submitted each candidate to the
+login endpoint. 4. Inspected the returned response body. 5. Classified
+candidates according to the application's error message. 6. Returned
+recognised usernames.
+
+The central classification logic was:
+
+``` python
+if "Incorrect password" in body:
+    valid_users.append(username)
+elif "Invalid username" in body:
+    invalid_users.append(username)
+else:
+    unclassified.append(username)
+```
+
+### 4.1 Initial execution
+
+The first execution produced:
+
+``` text
+Invalid username responses: 100
+validUsers = ['apple']
+```
+
+The candidate `apple` was subsequently checked through Burp Repeater.
+The application returned `Incorrect password`, independently confirming
+that the username was recognised.
+
+This established that the Python implementation was correctly
+interpreting the application's response distinction.
+
+## 5. Two-stage implementation
+
+The next iteration extended the original approach to include password
+candidate testing.
+
+Rather than treating username enumeration and password testing as
+unrelated operations, the implementation orchestrated them sequentially.
+
+### 5.1 Phase one --- Username enumeration
+
+The script submitted a constant, deliberately incorrect password against
+each username candidate.
+
+Recognised usernames were retained for the second phase.
+
+### 5.2 Phase two --- Password candidate testing
+
+The script iterated through the password candidate list for each
+recognised username.
+
+It classified the response using: - The final URL path, checking for
+`/my-account`. - The `Incorrect password` response marker. - The
+`Invalid username` response marker. - An unclassified result where the
+response did not match the expected conditions.
+
+The script stopped testing further password candidates for a username
+after detecting a successful login.
+
+### 5.3 Session continuity within an execution
+
+The implementation used a single cookie-aware opener for both phases:
+
+``` python
+opener = build_opener(HTTPCookieProcessor(CookieJar()))
+```
+
+This opener was passed through the username enumeration and password
+testing functions.
+
+Consequently, cookies received during the first phase could be retained
+and reused during the second phase. This provided session continuity
+within an individual script execution.
+
+It did not, however, automatically discover a replacement lab URL or
+preserve a session across a newly launched lab instance.
+
+## 6. Implementation reasoning and pseudocode
+
+The principal design decision was to separate candidate identification
+from credential testing.
+
+This reduced unnecessary password requests because the second phase only
+operated on usernames already recognised by the application.
+
+### 6.1 Pseudocode
+
+``` text
+INPUT:
+    candidate_users
+    candidate_passwords
+    login_endpoint
+    constant_test_password
+
+INITIALISE:
+    valid_users = []
+    invalid_users = []
+    valid_credentials = []
+
+FUNCTION classify_response(response):
+    IF response redirects to account page:
+        RETURN LOGIN_SUCCESS
+    ELSE IF response contains "Incorrect password":
+        RETURN VALID_USERNAME
+    ELSE IF response contains "Invalid username":
+        RETURN INVALID_USERNAME
+    ELSE:
+        RETURN UNCLASSIFIED
+
+PHASE 1 — USERNAME ENUMERATION:
+
+    FOR each username IN candidate_users:
+
+        response = submit_login(
+            username,
+            constant_test_password
+        )
+
+        classification = classify_response(response)
+
+        IF classification == VALID_USERNAME:
+            append username to valid_users
+
+        ELSE IF classification == INVALID_USERNAME:
+            append username to invalid_users
+
+        ELSE:
+            record unclassified response
+
+PHASE 2 — PASSWORD CANDIDATE TESTING:
+
+    FOR each username IN valid_users:
+
+        FOR each password IN candidate_passwords:
+
+            response = submit_login(username, password)
+
+            classification = classify_response(response)
+
+            IF classification == LOGIN_SUCCESS:
+                append (username, password)
+                    to valid_credentials
+
+                BREAK
+
+            ELSE:
+                continue testing candidates
+
+OUTPUT:
+    valid_users
+    valid_credentials
+    unclassified responses
+```
+
+### 6.2 Comparison with the PortSwigger reference procedure
+
+The reference procedure uses Burp Intruder to submit username
+candidates, inspect response differences, and then test password
+candidates against recognised usernames.
+
+The Python implementation reproduced the underlying testing logic while
+automating candidate iteration and response classification.
+
+The implementation was more autonomous in execution, but not fully
+autonomous: the candidate lists, target URL, and execution initiation
+remained user-controlled.
+
+The password-testing stage detects success through the final URL path `/my-account` after Python's
+HTTP handling rather than explicitly inspect an HTTP 302 status code as
+the desired lab evaluation condition.
+
+## 7. Execution results
+
+The following results were observed chronologically.
+
+### 7.1 Initial username enumeration
+
+``` text
+validUsers = ['apple']
+```
+
+Burp Repeater subsequently confirmed the `Incorrect password` response
+for this candidate.
+
+### 7.2 First two-stage execution
+
+One execution was performed while the password candidate list was empty.
+
+The script correctly reported:
+
+``` text
+validUsers = ['amarillo']
+Password phase skipped: add candidates to CANDIDATE_PASSWORDS after review.
+```
+
+This demonstrated that the username enumeration phase could complete
+independently of the password phase.
+
+### 7.3 Successful two-stage execution
+
+After password candidates were supplied, the script produced:
+
+``` text
+validUsers = ['amarillo']
+validCredentials = [('amarillo', 'matthew')]
+```
+
+The PortSwigger Academy interface subsequently displayed:
+
+**Congratulations, you solved the lab!**
+
+This is the definitive completion result for Lab 1.
+
+### 7.4 Repeated execution
+
+The terminal evidence also shows a subsequent execution returning the
+same recognised username and credential result:
+
+``` text
+validUsers = ['amarillo']
+validCredentials = [('amarillo', 'matthew')]
+```
+
+The repeated result provides additional evidence that the implementation
+could reproduce the successful outcome while the relevant lab instance
+remained available.
+
+## 8. New finding --- Session expiry and target URL management
+
+### 8.1 Observed operational constraint
+
+During repeated testing, the lab session expired. A replacement lab
+session required a new lab URL to be supplied to the script manually.
+
+The target URL was hard-coded in the Python implementation:
+
+``` python
+LOGIN_URL = "https://...web-security-academy.net/login"
+```
+
+As a result, when a new lab instance was launched, the script could
+continue pointing to the previous instance unless the URL was updated.
+
+The user also had to manually provide the new URL when the session
+expired.
+
+### 8.2 HTTP 504 execution result
+
+A later execution returned:
+
+``` text
+Lab returned HTTP 504; stopping.
+```
+
+The terminal screenshot records this after earlier successful
+executions.
+
+The script stopped rather than interpreting the gateway error as a valid
+or invalid username/password result. Which was the intended behaviour for
+an unclassified infrastructure failure.
+
+The 504 is consistent with the session or lab instance no longer being
+available, along with `Server Error: Gateway Timeout (0) connecting to 0a6300de036ff6a68197077700cf0051.web-security-academy.net`
+
+### 8.3 Existing session handling versus missing lifecycle handling
+
+The implementation already used `CookieJar` and `HTTPCookieProcessor`.
+
+This means it could maintain cookies received during its own execution.
+The limitation was not a complete absence of cookie handling.
+
+The missing functionality was at the session lifecycle level:
+
+-   No dedicated initial GET request to establish a session before
+    testing.
+-   No explicit validation that the supplied lab URL still referred to
+    an active instance.
+-   No automated discovery of a replacement lab hostname.
+-   No controlled restart or reinitialisation workflow after expiry.
+-   The target URL remained a manually maintained configuration value.
+
+The script must also establish and retain a usable session with the new instance.
+
+### 8.4 Proposed improvement --- Session initialisation
+
+A future version should introduce a distinct initialisation stage:
+
+``` text
+INPUT:
+    active_lab_url
+
+INITIALISE:
+    create cookie-aware HTTP opener
+
+SESSION INITIALISATION:
+
+    request GET /login using active_lab_url
+
+    capture session cookies
+
+    verify expected login page response
+
+    IF session initialisation fails:
+        stop execution
+        report session or connectivity failure
+
+EXECUTION:
+
+    run username enumeration
+
+    run password candidate testing
+    using the same opener and session
+
+ERROR HANDLING:
+
+    IF gateway or server error occurs:
+        stop execution
+        report execution interruption
+        do not classify it as an authentication result
+```
+
+This would remove the need to manually manage session cookies and ensure
+that the script establishes its own session before testing.
+
+It would not eliminate the need to supply a new lab URL when PortSwigger
+creates a replacement instance. Automated URL discovery would be a
+separate enhancement and has been implemented here `username_password_algorithm.md`.
+
+## 9. Complexity and performance considerations
+
+Let:
+
+-   \(m\) represent the number of username candidates.
+-   \(n\) represent the number of password candidates.
+-   \(v\) represent the number of recognised usernames.
+
+Username enumeration requires approximately (m) HTTP requests, giving:
+
+\[ O(m) \]
+
+Password candidate testing requires up to (v `\times `{=tex}n) requests:
+
+\[ O(vn) \]
+
+The combined worst-case request complexity is:
+
+\[ O(m + vn) \]
+
+For one recognised username, the password phase scales linearly with the
+number of password candidates:
+
+\[ O(n) \]
+
+Also should Note that Network latency, server response time, redirects, and session
+availability also affect execution duration.
+
+## 10. Evidence register
+
+  -----------------------------------------------------------------------------------------
+  ID                      Evidence                Description
+  ----------------------- ----------------------- -----------------------------------------
+  E-01                    Initial GET request     Captured login-page request and session
+                                                  context.
+
+  E-02                    Invalid username        HTTP 200 response containing
+                          response                `Invalid username`.
+
+  E-03                    Recognised username     HTTP 200 response containing
+                          response                `Incorrect password`.
+
+  E-04                    Initial Python          Username enumeration output identifying
+                          execution               `apple`.
+
+  E-05                    Burp Repeater           Independent response validation for
+                          validation              `apple`.
+
+  E-06                    Two-stage Python        Code supplied for username enumeration
+                          implementation          and password candidate testing.
+
+  E-07                    Successful two-stage    Output identifying `amarillo` and
+                          execution               `matthew`.
+
+  E-08                    Academy solved          Original file:
+                          screenshot              `username enumeration Lab solved .png`.
+                                                  Shows the lab completion message.
+
+  E-09                    Python execution        Original file:
+                          screenshot              `output results of script.png`. Shows the
+                                                  development environment and successful
+                                                  execution output.
+
+  E-10                    Session-expiry          Original file:
+                          execution screenshot    `session expiration execution.png`. Shows
+                                                  the earlier successful runs, the
+                                                  password-phase skip when the candidate
+                                                  list was empty, repeated successful
+                                                  output, and the later HTTP 504
+                                                  interruption. Implemented design solution
+                                                  failure point can be found here: username_password_algorithm.md
+  -----------------------------------------------------------------------------------------
+
+**Evidence handling:** Original filenames are retained. The E-10
+screenshot is supplementary evidence of execution behaviour and the
+session-expiry constraint.
+
+## 11. Constraints and limitations
+
+The following limitations were identified:
+
+1.  The target lab URL is hard-coded and requires manual updating when a
+    replacement instance is launched.
+2.  Session cookies are maintained within a script execution, but there
+    is no explicit session initialisation or validation stage.
+3.  A 504 response interrupts execution and requires investigation
+    rather than candidate classification.
+4.  Candidate generation and candidate ordering remain dependent on
+    externally supplied lists.
+5.  Response classification relies on known textual markers and the
+    expected account-page path.
+6.  The script does not yet export structured execution logs containing
+    timestamps, response status, response length, final URL, and
+    classification.
+7.  The implementation has not been tested against a broad range of
+    session-expiry, timeout, or transient server-failure conditions.
+
+## 12. Future optimisation register
+
+The following items are planned and have not been implemented:
+
+-   Configurable candidate generation, including ASCII candidate sets.
+-   Search-space modelling and probability-weighted candidate ordering.
+-   Improved dictionary quality and ordering.
+-   Performance modelling, including request rate and evaluation time.
+-   Structured response metadata and evidence exports.
+-   Modular separation of candidate generation, ordering, HTTP
+    submission, classification, storage, and evidence.
+-   Reproducible execution configuration and reporting.
 
 
+## 13. Security finding and remediation
+
+**F-01 --- Username enumeration through different authentication
+responses**
+
+**Observation:** The application returned `Invalid username` for
+unrecognised usernames and `Incorrect password` for recognised
+usernames.
+
+**Impact:** An attacker could use the difference to identify valid
+accounts, reducing uncertainty before attempting password attacks.
+
+**Recommended remediation:** - Return a consistent authentication
+failure message regardless of whether the username exists. - Ensure
+response behaviour does not reveal account validity through other
+distinguishable characteristics. - Apply appropriate rate limiting and
+monitoring to authentication attempts. - Consider additional controls
+against automated credential attacks.
+
+No remediation or retest was performed as part of this lab.
+
+## 14. Conclusion
+
+Lab 1 was successfully completed.
+
+The assessment progressed from manual HTTP inspection to a Python
+implementation capable of performing username enumeration and password
+candidate testing in sequence. The final execution identified a valid
+username and password, and the Academy confirmed the lab was solved.
+
+The later HTTP 504 exposed an operational limitation in the current
+implementation: the lab URL had to be manually updated when a session
+expired and a replacement instance was launched. Although cookie
+handling was implemented within each execution, explicit session
+initialisation and lifecycle management were not.
+
+The next engineering improvement is therefore to separate session
+initialisation and validation from the enumeration logic, preserving the
+existing successful baseline while improving execution reliability.
+
+**Final assessment status:** Lab solved. Session lifecycle improvement
+identified and implemented at:`username_password_algorithm.md`.
