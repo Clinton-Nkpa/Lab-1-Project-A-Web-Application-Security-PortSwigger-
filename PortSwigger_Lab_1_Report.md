@@ -373,7 +373,7 @@ remained available.
 
 During repeated testing, the lab session expired. A replacement lab
 session required a new lab URL to be supplied to the script manually.
-(https://github.com/Clinton-Nkpa/Lab-1-Project-A-Web-Application-Security-PortSwigger-/blob/main/Findings/session%20expiration.png)
+![Embedded report figure](https://github.com/Clinton-Nkpa/Lab-1-Project-A-Web-Application-Security-PortSwigger-/blob/main/Findings/session%20expiration.png)
 
 The target URL was hard-coded in the Python implementation:
 
