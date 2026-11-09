@@ -598,13 +598,14 @@ failure message regardless of whether the username exists. - Ensure
 response behaviour does not reveal account validity through other
 distinguishable characteristics. - Apply appropriate rate limiting and
 monitoring to authentication attempts. - Consider additional controls
-against automated credential attacks.
+against automated credential attacks like MF Authentication.
 
 No remediation or retest was performed as part of this lab.
 
 ## 14. Conclusion
 
 Lab 1 was successfully completed.
+![](https://github.com/Clinton-Nkpa/Lab-1-Project-A-Web-Application-Security-PortSwigger-/blob/main/Evidence/username%20enumeration%20Lab%20solved%20.png)
 
 The assessment progressed from manual HTTP inspection to a Python
 implementation capable of performing username enumeration and password
