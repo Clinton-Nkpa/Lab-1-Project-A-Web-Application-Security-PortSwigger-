@@ -397,6 +397,7 @@ Lab returned HTTP 504; stopping.
 
 The terminal screenshot records this after earlier successful
 executions.
+[](https://github.com/Clinton-Nkpa/Lab-1-Project-A-Web-Application-Security-PortSwigger-/blob/main/Evidence/session%20expiration%20execution.png)
 
 The script stopped rather than interpreting the gateway error as a valid
 or invalid username/password result. Which was the intended behaviour for
