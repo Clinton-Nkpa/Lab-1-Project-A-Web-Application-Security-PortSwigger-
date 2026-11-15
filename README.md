@@ -183,11 +183,11 @@ The AWS API Security and Detection project will remain in its own report and rep
 | Item | Status |
 |---|---|
 | Project objective and scope | Defined |
-| Initial toolset | Selected / planned |
+| Initial toolset | Selected |
 | Testing methodology | Defined |
 | Expected constraints | Documented as hypotheses |
-| Observed constraints | Not yet assessed |
-| Practical Academy testing | Not yet started |
-| Validated findings | None claimed |
-| Final conclusions | Pending execution |
+| Observed constraints | assessed |
+| Practical Academy testing | complete |
+| Validated findings | complete |
+| Final conclusions | complete |
 
