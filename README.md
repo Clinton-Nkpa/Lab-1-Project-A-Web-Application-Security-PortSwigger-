@@ -112,11 +112,11 @@ This section will be updated with observed constraints and compared with the exp
 
 | Area | Expected constraint | Observed constraint / evidence | Effect on method/result | Adjustment made | Status |
 |---|---|---|---|---|---|
-| Browser and proxy | Configuration may prevent complete capture | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Burp Community | Feature limitations may affect workflow | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Academy environment | Reset/expiry or simplified behaviour may affect repeatability | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Test methodology | Lab's expected path may not represent all variants | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
-| Evidence capture | Sanitisation or missing context may limit interpretation | To be recorded during testing | To be assessed | To be recorded | Not yet observed |
+| Browser and proxy | Configuration may prevent complete capture | To be recorded during testing | To be assessed | To be recorded | observed |
+| Burp Community | Feature limitations may affect workflow | To be recorded during testing | To be assessed | To be recorded | Not observed |
+| Academy environment | Reset/expiry or simplified behaviour may affect repeatability | To be recorded during testing | To be assessed | To be recorded | observed |
+| Test methodology | Lab's expected path may not represent all variants | To be recorded during testing | To be assessed | To be recorded | observed |
+| Evidence capture | Sanitisation or missing context may limit interpretation | To be recorded during testing | To be assessed | To be recorded | Not observed |
 
 A difference between expectation and reality is not automatically a failure. A constraint may be absent, more significant than expected, or caused by an unaccounted or external factor rather than the application itself.
 
